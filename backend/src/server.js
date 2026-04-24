@@ -27,6 +27,10 @@ app.use((err, req, res, next) => {
 
 const startServer = async () => {
   try {
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET environment variable is not set');
+    }
+
     await createUsersTable();
     console.log('Database tables initialized');
 

@@ -88,8 +88,14 @@ function Dashboard({ user }) {
 
 function App() {
   const [user, setUser] = React.useState(() => {
-    const stored = localStorage.getItem('zamestate_user');
-    return stored ? JSON.parse(stored) : null;
+    try {
+      const stored = localStorage.getItem('zamestate_user');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      localStorage.removeItem('zamestate_user');
+      localStorage.removeItem('zamestate_token');
+      return null;
+    }
   });
 
   const isLoggedIn = Boolean(user);
