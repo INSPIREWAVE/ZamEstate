@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const { testConnection } = require('./config/db');
 const { createUsersTable } = require('./models/userModel');
 const authRoutes = require('./routes/authRoutes');
 
@@ -28,9 +29,11 @@ app.use((err, req, res, next) => {
 const startServer = async () => {
   try {
     if (!process.env.JWT_SECRET) {
-      throw new Error('JWT_SECRET environment variable is not set');
+      console.error('ERROR: JWT_SECRET environment variable is not set');
+      process.exit(1);
     }
 
+    await testConnection();
     await createUsersTable();
     console.log('Database tables initialized');
 
@@ -38,7 +41,7 @@ const startServer = async () => {
       console.log(`Zam Estate API running on http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('Failed to start server:', error.message);
     process.exit(1);
   }
 };
